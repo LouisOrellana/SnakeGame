@@ -24,6 +24,14 @@ while run:
             run = False
 
     keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        x-=blockSize
+    elif keys[pygame.K_RIGHT]:
+        x+=blockSize
+    elif keys[pygame.K_UP]:
+        y-=blockSize
+    elif keys[pygame.K_DOWN]:
+        y+=blockSize
     
     win.fill(black)
     
