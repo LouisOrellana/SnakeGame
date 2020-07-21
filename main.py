@@ -17,21 +17,25 @@ def drawGrid(win, color):
         pygame.draw.line(win, color, (margin + i*blockSize, margin), (margin + i*blockSize, mapSize-margin), 1)
         pygame.draw.line(win, color, (margin, margin + i*blockSize), (mapSize-margin, margin + i*blockSize), 1)
         
-
+pressedKeys = []
 while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        x-=blockSize
-    elif keys[pygame.K_RIGHT]:
-        x+=blockSize
-    elif keys[pygame.K_UP]:
-        y-=blockSize
-    elif keys[pygame.K_DOWN]:
-        y+=blockSize
+        if event.type == pygame.KEYDOWN:
+            pressedKeys.append(event.key)
+        if event.type == pygame.KEYUP:
+            pressedKeys.remove(event.key)
+    if pressedKeys:
+        if pressedKeys[-1] == pygame.K_LEFT:
+            x-=blockSize
+        elif pressedKeys[-1] == pygame.K_RIGHT:
+            x+=blockSize
+        elif pressedKeys[-1] == pygame.K_UP:
+            y-=blockSize
+        elif pressedKeys[-1] == pygame.K_DOWN:
+            y+=blockSize
+            
     
     win.fill(black)
     
