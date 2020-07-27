@@ -23,11 +23,27 @@ class Box:
     
     def move(self, deltaX, deltaY):
         self.pos[0]+=deltaX
-        self.pos[1]+=deltaY        
+        self.pos[1]+=deltaY
+    
+    def __eq__(self, other):
+        return self.pos == other.pos
         
- 
-
-
+        
+class Snake:
+    def __init__(self):
+        self.body = [Box(), Box([0,1]), Box([0,2])]
+    
+    def draw(self):
+        for box in self.body:
+            box.draw()
+    
+    def move(self, deltaX, deltaY):
+        newPos = self.body[0].pos[:] # Deep copy of position
+        newPos[0]+=deltaX
+        newPos[1]+=deltaY
+        self.body.insert(0, Box(pos=newPos))
+        self.body.pop(-1)
+        
        
 def drawGrid(win, color):
     gridlineCount = (mapSize-(2*margin))//blockSize + 1
@@ -39,7 +55,7 @@ def drawGrid(win, color):
 
         
 pressedKeys = []
-snake = Box()
+snake = Snake()
 run = True
 while run:
     for event in pygame.event.get():
