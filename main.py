@@ -76,9 +76,10 @@ while run:
             snake.move(0, 1)
             
     
-    win.fill(black)    
-    drawGrid(win, white)
+    win.fill(black)  
     snake.draw()
+    drawGrid(win, white)
+    
     
     pygame.display.update()
     pygame.time.delay(70)
