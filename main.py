@@ -73,6 +73,7 @@ pressedKeys = []
 snake = Snake()
 food = Box(pos=[4, 4], color=foodColor)
 run = True
+lastDir = 'LEFT'
 while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -83,13 +84,23 @@ while run:
             pressedKeys.remove(event.key)
     if pressedKeys:
         if pressedKeys[-1] == pygame.K_LEFT:
-            snake.move(-1, 0)
+            lastDir = 'LEFT'
         elif pressedKeys[-1] == pygame.K_RIGHT:
-            snake.move(1, 0)
+            lastDir = 'RIGHT'
         elif pressedKeys[-1] == pygame.K_UP:
-            snake.move(0, -1)
+            lastDir = 'UP'
         elif pressedKeys[-1] == pygame.K_DOWN:
-            snake.move(0, 1)
+            lastDir = 'DOWN'
+    
+    if lastDir == 'LEFT':
+        snake.move(-1, 0)
+    elif lastDir == 'RIGHT':
+        snake.move(1, 0)
+    elif lastDir == 'UP':
+        snake.move(0, -1)
+    elif lastDir == 'DOWN':
+        snake.move(0, 1)
+        
 
     if checkCollision(snake, food):
         snake.eat()
@@ -101,7 +112,7 @@ while run:
 
 
     pygame.display.update()
-    pygame.time.delay(100)
+    pygame.time.delay(200)
 
 
 pygame.quit()
