@@ -1,11 +1,11 @@
 import pygame
 
-blockSize, mapSize, margin = 20, 600, 30
-
+blockSize, mapSize, margin = 20, 25, 50
+winSize = (2 * margin) + (blockSize * mapSize)
 black, white, snakeColor = (0,0,0), (255,255,255), (255,0,255)
 
 pygame.init()
-win = pygame.display.set_mode((mapSize,mapSize))
+win = pygame.display.set_mode((winSize,winSize))
 pygame.display.set_caption("Snake Game")
 
 
@@ -45,11 +45,10 @@ class Snake:
         self.body.pop(-1)
         
        
-def drawGrid(win, color):
-    gridlineCount = (mapSize-(2*margin))//blockSize + 1
-    for i in range(gridlineCount):
-        pygame.draw.line(win, color, (margin + i*blockSize, margin), (margin + i*blockSize, mapSize-margin), 1)
-        pygame.draw.line(win, color, (margin, margin + i*blockSize), (mapSize-margin, margin + i*blockSize), 1)
+def drawGrid(color):
+    for i in range(mapSize + 1):
+        pygame.draw.line(win, color, (margin + i*blockSize, margin), (margin + i*blockSize, winSize-margin), 1)
+        pygame.draw.line(win, color, (margin, margin + i*blockSize), (winSize-margin, margin + i*blockSize), 1)
 
 
 
@@ -78,11 +77,11 @@ while run:
     
     win.fill(black)  
     snake.draw()
-    drawGrid(win, white)
+    drawGrid(white)
     
     
     pygame.display.update()
-    pygame.time.delay(70)
+    pygame.time.delay(100)
 
     
 pygame.quit()
