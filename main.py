@@ -1,9 +1,11 @@
 import pygame
 from random import randint
+from time import time
 
 blockSize, mapSize, margin = 20, 25, 50
 winSize = (2 * margin) + (blockSize * mapSize)
 black, white, snakeColor, foodColor = (0,0,0), (255,255,255), (255,0,255), (0, 255, 0)
+delay = 150
 
 pygame.init()
 win = pygame.display.set_mode((winSize,winSize))
@@ -62,18 +64,21 @@ def checkCollision(snake, food):
     aux = False
     if food in snake.body:
         aux = True
-        print('collided')
         while food in snake.body:
             food.pos = [randint(0, mapSize-1), randint(0, mapSize-1)]
     return aux
 
+
+def getMillis():
+    return int(round(time() * 1000))
 
 
 pressedKeys = []
 snake = Snake()
 food = Box(pos=[4, 4], color=foodColor)
 run = True
-lastDir = 'LEFT'
+lastDir = 'RIGHT'
+lastMillis = getMillis()
 while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -91,20 +96,23 @@ while run:
             lastDir = 'UP'
         elif pressedKeys[-1] == pygame.K_DOWN:
             lastDir = 'DOWN'
-    
-    if lastDir == 'LEFT':
-        snake.move(-1, 0)
-    elif lastDir == 'RIGHT':
-        snake.move(1, 0)
-    elif lastDir == 'UP':
-        snake.move(0, -1)
-    elif lastDir == 'DOWN':
-        snake.move(0, 1)
+            
+    currentMillis = getMillis()
+    if currentMillis - lastMillis >= delay:
+        if lastDir == 'LEFT':
+            snake.move(-1, 0)
+        elif lastDir == 'RIGHT':
+            snake.move(1, 0)
+        elif lastDir == 'UP':
+            snake.move(0, -1)
+        elif lastDir == 'DOWN':
+            snake.move(0, 1)
+
+        if checkCollision(snake, food):
+            snake.eat()
+            
+        lastMillis = getMillis()
         
-
-    if checkCollision(snake, food):
-        snake.eat()
-
     win.fill(black)
     food.draw()
     snake.draw()
@@ -112,7 +120,6 @@ while run:
 
 
     pygame.display.update()
-    pygame.time.delay(200)
 
 
 pygame.quit()
