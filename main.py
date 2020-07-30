@@ -41,16 +41,23 @@ class Snake:
         for box in self.body:
             box.draw()
 
-    def move(self, deltaX, deltaY):
+    def move(self, delta):
         newPos = self.body[0].pos[:] # Deep copy of position
-        newPos[0]+=deltaX
-        newPos[1]+=deltaY
+        newPos[0]+=delta[0]
+        newPos[1]+=delta[1]
         self.body.insert(0, Box(pos=newPos))
         self.lastPop = self.body[-1]
         self.body.pop(-1)
     
     def eat(self):
         self.body.append(self.lastPop)
+    
+    def checkCollision(self):
+        for box in self.body:
+            if self.body.count(box)>1:
+                print('Bit yourself')
+                return True
+        return True
         
 
 
@@ -60,7 +67,7 @@ def drawGrid(color):
         pygame.draw.line(win, color, (margin, margin + i*blockSize), (winSize-margin, margin + i*blockSize), 1)
 
 
-def checkCollision(snake, food):
+def foodCollision(snake, food):
     aux = False
     if food in snake.body:
         aux = True
@@ -78,6 +85,7 @@ snake = Snake()
 food = Box(pos=[4, 4], color=foodColor)
 run = True
 lastDir = 'RIGHT'
+move = {'LEFT': [-1, 0], 'RIGHT': [1, 0], 'UP': [0, -1], 'DOWN': [0, 1]}
 lastMillis = getMillis()
 while run:
     for event in pygame.event.get():
@@ -99,18 +107,11 @@ while run:
             
     currentMillis = getMillis()
     if currentMillis - lastMillis >= delay:
-        if lastDir == 'LEFT':
-            snake.move(-1, 0)
-        elif lastDir == 'RIGHT':
-            snake.move(1, 0)
-        elif lastDir == 'UP':
-            snake.move(0, -1)
-        elif lastDir == 'DOWN':
-            snake.move(0, 1)
+        snake.move(move[lastDir])
 
-        if checkCollision(snake, food):
+        if foodCollision(snake, food):
             snake.eat()
-            
+        snake.checkCollision()
         lastMillis = getMillis()
         
     win.fill(black)
