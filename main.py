@@ -5,6 +5,7 @@ from time import time
 blockSize, mapSize, margin = 20, 25, 50
 winSize = (2 * margin) + (blockSize * mapSize)
 black, white, snakeColor, foodColor = (0,0,0), (255,255,255), (255,0,255), (0, 255, 0)
+menuColor = (255, 0, 100)
 delay = 150
 
 pygame.init()
@@ -93,7 +94,10 @@ def game():
             if event.type == pygame.KEYDOWN:
                 pressedKeys.append(event.key)
             if event.type == pygame.KEYUP:
-                pressedKeys.remove(event.key)
+                try:
+                    pressedKeys.remove(event.key)
+                except:
+                    pass
         if pressedKeys:
             if pressedKeys[-1] == pygame.K_LEFT:
                 lastDir = 'LEFT'
@@ -124,5 +128,8 @@ def game():
     
         pygame.display.update()
 
-print(game())
+while True:
+    status = game()
+    if status == 'YOU QUIT':
+        break
 pygame.quit()
