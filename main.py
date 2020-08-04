@@ -55,9 +55,8 @@ class Snake:
     def checkCollision(self):
         for box in self.body:
             if self.body.count(box)>1:
-                print('Bit yourself')
                 return True
-        return True
+        return False
         
 
 
@@ -80,47 +79,50 @@ def getMillis():
     return int(round(time() * 1000))
 
 
-pressedKeys = []
-snake = Snake()
-food = Box(pos=[4, 4], color=foodColor)
-run = True
-lastDir = 'RIGHT'
-move = {'LEFT': [-1, 0], 'RIGHT': [1, 0], 'UP': [0, -1], 'DOWN': [0, 1]}
-lastMillis = getMillis()
-while run:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-        if event.type == pygame.KEYDOWN:
-            pressedKeys.append(event.key)
-        if event.type == pygame.KEYUP:
-            pressedKeys.remove(event.key)
-    if pressedKeys:
-        if pressedKeys[-1] == pygame.K_LEFT:
-            lastDir = 'LEFT'
-        elif pressedKeys[-1] == pygame.K_RIGHT:
-            lastDir = 'RIGHT'
-        elif pressedKeys[-1] == pygame.K_UP:
-            lastDir = 'UP'
-        elif pressedKeys[-1] == pygame.K_DOWN:
-            lastDir = 'DOWN'
+def game():
+    pressedKeys = []
+    snake = Snake()
+    food = Box(pos=[4, 4], color=foodColor)
+    lastDir = 'RIGHT'
+    move = {'LEFT': [-1, 0], 'RIGHT': [1, 0], 'UP': [0, -1], 'DOWN': [0, 1]}
+    lastMillis = getMillis()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return 'YOU QUIT'
+            if event.type == pygame.KEYDOWN:
+                pressedKeys.append(event.key)
+            if event.type == pygame.KEYUP:
+                pressedKeys.remove(event.key)
+        if pressedKeys:
+            if pressedKeys[-1] == pygame.K_LEFT:
+                lastDir = 'LEFT'
+            elif pressedKeys[-1] == pygame.K_RIGHT:
+                lastDir = 'RIGHT'
+            elif pressedKeys[-1] == pygame.K_UP:
+                lastDir = 'UP'
+            elif pressedKeys[-1] == pygame.K_DOWN:
+                lastDir = 'DOWN'
+                
+        currentMillis = getMillis()
+        if currentMillis - lastMillis >= delay:
+            snake.move(move[lastDir])
+    
+            if foodCollision(snake, food):
+                snake.eat()
+            if snake.checkCollision():
+                return 'YOU LOST\nYOU BIT YOURSELF'
+            pos = snake.body[0].pos
+            if 0 > pos[0] or pos[0] >= mapSize or  0 > pos[1] or pos[1] >= mapSize:
+                return 'YOU LOST\nOUT OF BOUNDS'
+            lastMillis = getMillis()
             
-    currentMillis = getMillis()
-    if currentMillis - lastMillis >= delay:
-        snake.move(move[lastDir])
+        win.fill(black)
+        food.draw()
+        snake.draw()
+        drawGrid(white)
+    
+        pygame.display.update()
 
-        if foodCollision(snake, food):
-            snake.eat()
-        snake.checkCollision()
-        lastMillis = getMillis()
-        
-    win.fill(black)
-    food.draw()
-    snake.draw()
-    drawGrid(white)
-
-
-    pygame.display.update()
-
-
+print(game())
 pygame.quit()
